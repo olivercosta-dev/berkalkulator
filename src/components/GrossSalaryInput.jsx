@@ -1,4 +1,5 @@
-import { useState } from "react"
+import { useContext, useState } from "react"
+import { PersonProfileContext } from "../helpers/PersonProfileContext"
 // Available discounts - Each of them are boolean values, inside the applicableDiscounts object:
 //
 // noPersonalIncomeTax
@@ -7,14 +8,23 @@ import { useState } from "react"
 
 
 
-export default function GrossSalaryInput({grossSalary, setGrossSalary, minGross, maxGross, changeButtons}) {
+export default function GrossSalaryInput(
+{
+    minGross,
+    maxGross, 
+    changeButtons,
+}
+) 
+{
+    const {updatePersonProfile, personProfile} = useContext(PersonProfileContext)
+
     const handleSetGrossSalary = (value) => {
         if(value > maxGross) {
-            setGrossSalary(maxGross)
+            updatePersonProfile(personProfile, "grossSalary", maxGross)
         } else if(value < minGross) {
-            setGrossSalary(minGross)
+            updatePersonProfile(personProfile, "grossSalary", minGross)
         } else {
-            setGrossSalary(value)
+            updatePersonProfile(personProfile, "grossSalary", value)
         }
     }
     return (
@@ -22,7 +32,7 @@ export default function GrossSalaryInput({grossSalary, setGrossSalary, minGross,
             <label 
                 htmlFor="gross-salary"
                 className="label"
-            >   
+            >
                 Bruttó Bér
             </label>
             <input 
@@ -35,18 +45,18 @@ export default function GrossSalaryInput({grossSalary, setGrossSalary, minGross,
                 onChange= {
                     (e) => handleSetGrossSalary(e.target.value)
                 } 
-                value={grossSalary}
+                value={personProfile.grossSalary}
             />
             <div className="flex gap-5">
                 <input 
                     type="range" 
-                    name="gross-salary" 
+                    name="gross-salary"
                     id="gross-salary"
                     className="range range-xs my-5"
                     min={minGross} 
                     max={maxGross} 
-                    value={grossSalary} 
-                    onChange={(e) => setGrossSalary(e.target.value)}
+                    value={personProfile.grossSalary} 
+                    onChange={(e) => handleSetGrossSalary(e.target.value)}
                 />
                 <div className="flex flex-row gap-3">
                     {
@@ -54,7 +64,7 @@ export default function GrossSalaryInput({grossSalary, setGrossSalary, minGross,
                             <button 
                                 key={button.id}
                                 className="btn btn-outline"
-                                onClick={ (e) => {handleSetGrossSalary(grossSalary * (1 + (button.changePercent / 100)))}
+                                onClick={ (e) => {handleSetGrossSalary(personProfile.grossSalary * (1 + (button.changePercent / 100)))}
                                 }
                             >
                                 {button.changePercent > 0 ? `+${button.changePercent}` : button.changePercent}%

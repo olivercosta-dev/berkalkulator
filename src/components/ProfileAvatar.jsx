@@ -1,6 +1,6 @@
 import { useContext } from 'react'
 import { PersonProfileContext } from '../helpers/PersonProfileContext'
-export default function NameInput() {
+export default function ProfileAvatarInput() {
   
   const {updatePersonProfile, personProfile} = useContext(PersonProfileContext)
 
@@ -10,18 +10,17 @@ export default function NameInput() {
         htmlFor="name"
         className='label'
       >
-        Családtag neve
+        Profilkép URL
       </label>
       <input 
         type="text"
         id="name"
         className="input input-bordered"
-        value= {personProfile.personProfileName}
+        value= {personProfile.profileImageUrl}
         onChange={(e) => {
-          // setName(e.target.value)
-            updatePersonProfile(personProfile, "personProfileName", e.target.value)
+            updatePersonProfile(personProfile, "profileImageUrl", e.target.value)
           }
-        } placeholder="Adja meg a családtag névet"
+        } placeholder="Adja meg profilképét"
       />
     </>
   )

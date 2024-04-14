@@ -1,5 +1,15 @@
-import { useState } from "react";
-export default function FamilyDiscountInput({familyDiscount, setFamilyDiscount}) {
+import { useContext } from 'react'
+import { PersonProfileContext } from '../helpers/PersonProfileContext'
+
+export default function FamilyDiscountInput() {
+    const {updatePersonProfile, personProfile} = useContext(PersonProfileContext)
+    const handleSetFamilyDiscount = (familyDiscount) => {
+        updatePersonProfile(
+            personProfile,
+            "familyDiscount",
+            familyDiscount
+        )
+    }
     return (
     <>
         <div className="flex flex-row items-center gap-3 justify-between">
@@ -14,34 +24,35 @@ export default function FamilyDiscountInput({familyDiscount, setFamilyDiscount})
                 type="checkbox"
                 className="toggle"
                 onChange={() => {
-                        if(familyDiscount !== false) {
-                            setFamilyDiscount(false)
+                        if(personProfile.familyDiscount !== false) {
+                            handleSetFamilyDiscount(false)
                         } else {
-                            setFamilyDiscount({"dependants": 1, "discounted": 1})
+                            const defaultFamilyDiscount = {"dependants": 1, "discounted": 1} 
+                            handleSetFamilyDiscount(defaultFamilyDiscount)
                         }
                     }
                 }       
             />
         </div>
         {
-            familyDiscount !== false && (
+            personProfile.familyDiscount !== false && (
                 <>
                     <span>Eltartottak száma:</span> 
                     <input id="dependants"
                         type="number"
                         min={1}
-                        value={familyDiscount["dependants"]}
+                        value={personProfile.familyDiscount["dependants"]}
                         className="input input-bordered"
                         onChange= {
-                            (event) => 
+                            (event) =>
                             {
                                 const dependants = event.target.value < 1 ? 1 : event.target.value
-                                setFamilyDiscount(
-                                {
-                                    ...familyDiscount,
+                                const newFamilyDiscount =  {
+                                    ...personProfile.familyDiscount,
                                     "dependants": dependants, 
-                                    "discounted": familyDiscount["discounted"] > dependants ? dependants : familyDiscount["discounted"]
-                                })
+                                    "discounted": personProfile.familyDiscount["discounted"] > dependants ? dependants : personProfile.familyDiscount["discounted"]
+                                }
+                                handleSetFamilyDiscount(newFamilyDiscount)
                             }
                         }
                     />
@@ -49,16 +60,18 @@ export default function FamilyDiscountInput({familyDiscount, setFamilyDiscount})
                     <input id="discounted"
                         type="number"
                         min={1}
-                        max={familyDiscount["dependants"] > 3 ? 3 : familyDiscount["dependants"]} // Maximum 3 can be discounted
-                        value={familyDiscount["discounted"]}
+                        max={personProfile.familyDiscount["dependants"] > 3 ? 3 : personProfile.familyDiscount["dependants"]} // Maximum 3 can be discounted
+                        value={personProfile.familyDiscount["discounted"]}
                         className="input input-bordered"
                         onChange= {
-                            (event) => setFamilyDiscount(
+                            (event) => {
+                                const newFamilyDiscount =  
                                 {
-                                    ...familyDiscount,
+                                    ...personProfile.familyDiscount,
                                     "discounted": event.target.value < 1 ? 1 : event.target.value  
                                 }
-                            )
+                                handleSetFamilyDiscount(newFamilyDiscount)
+                            }
                         }
                     />
                 </>
